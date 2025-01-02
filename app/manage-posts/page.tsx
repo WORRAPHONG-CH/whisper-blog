@@ -1,9 +1,9 @@
 // 'use client'
-import { Button } from "./components/ui/Button";
-import PostTable from "./components/PostTable";
+import { Button } from "@/app/components/ui/Button";
+import PostTable from "@/app/components/PostTable";
 import Link from "next/link";
 import { Suspense } from "react";
-import { SearchFilter } from "./components/SearchFilter";
+import { SearchFilter } from "@/app/components/SearchFilter";
 import {Post} from '@prisma/client';
 import axios,{AxiosError} from 'axios';
 
@@ -45,7 +45,7 @@ const fetchPosts = async (filterParams:Filterprops['filterParams']):Promise<Post
     }
 }
 
-export default async function Home(
+export default async function ManagePosts(
   {searchParams, } : {searchParams:Promise<{[key:string]:string | ''}>}
 ) {
   const filterParams = await searchParams;

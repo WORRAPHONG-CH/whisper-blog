@@ -17,26 +17,26 @@ const DeleteButton = ({
 
     const router = useRouter();
 
-    const fetchPost = async () =>{
-        try{
-            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
+    // const fetchPost = async () =>{
+    //     try{
+    //         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
 
-        }catch(error){
-            if(axios.isAxiosError(error)){
-                console.log(error.message);
-            }
-            else{
-                console.log((error as Error).message)
-            }
-        }
-    }
+    //     }catch(error){
+    //         if(axios.isAxiosError(error)){
+    //             console.log(error.message);
+    //         }
+    //         else{
+    //             console.log((error as Error).message)
+    //         }
+    //     }
+    // }
 
     const deletePost = async () =>{
         try{
             // delete post 
             await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${postId}`)
             alert(`Delete Post${postId} Successfully `)
-            fetchPost();
+            // fetchPost();
             router.refresh()
             
 

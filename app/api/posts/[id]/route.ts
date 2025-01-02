@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
-// initialize prisma client
-const prisma = new PrismaClient();
 
 interface CustomError extends Error{
     statusCode?: number
@@ -59,15 +57,16 @@ export async function PUT(
         console.log(editId);
 
         // Get update data from req.body
-        const {title,content} = await req.json();
-        console.log(title,content);
+        const {title,content, category} = await req.json();
+        console.log(title,content, category);
 
         // Update data
         const updatePost = await prisma.post.update({
             where:{id:editId},
             data:{
                 title,
-                content
+                content,
+                category
             }
         })
 

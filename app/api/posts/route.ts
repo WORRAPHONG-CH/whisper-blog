@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import {prisma} from '@/lib/prisma';
+import { type NextRequest ,NextResponse } from 'next/server';
+// import { Post } from '@prisma/client';
 
-const prisma = new PrismaClient();
 
 export interface CustomError extends Error{
     statusCode?:number
@@ -14,16 +14,44 @@ const errorHandler = (error:CustomError) =>{
 }
 
 // API GET for get all post from database
-export async function GET(){
+export async function GET(
+    req : NextRequest
+){
     try{
-        // Get all data 
-        const results = await prisma.post.findMany(); // prisma.schema.queryMethod
+        const searchParams = req.nextUrl.searchParams;
+        const category = searchParams.get('category') || 'all';
+        const search = searchParams.get('search') || ''; // if not search the params has npo value
+        const sort =  searchParams.get('sort') || 'desc';
+        console.log({category,search,sort});
+
+        // Get data according to filter params
+        const whereCondition = category === 'all' ? {
+            title:{
+                contains: search,
+                mode: 'insensitive' as const,
+            },
+        } : {
+            category,
+            title:{
+                contain:search,
+                mode:'insensitive' as const,
+            }
+        }
+        console.log('whereCondition:',whereCondition);
+
+        const results = await prisma.post.findMany({
+            where: whereCondition,
+            orderBy:{ // orderBy createAt(Date)
+                createAt: sort,
+            } as {createAt : 'asc' | 'desc'} ,
+        }); // prisma.schema.queryMethod
         
         // if results is empthy
-        if(!results || results.length === 0){
+        if(!results){
             throw new Error('Data not found')
         }
-
+        // console.log('results:',results);
+    
 
         return Response.json({data:results})
     }catch(error:unknown){
@@ -35,11 +63,12 @@ export async function GET(){
 // API POST for get title, content
 export async function POST(req:Request){
     try{
-        const {title,content} = await req.json(); // convert request to jsObj
+        const {title,content,category} = await req.json(); // convert request to jsObj
         const newPost = await prisma.post.create({
             data:{
                 title,
-                content
+                content,
+                category
             },
         });
         

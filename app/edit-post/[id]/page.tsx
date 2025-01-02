@@ -20,6 +20,7 @@ export default function Page() {
     const id = params.id; // Get id from params url
     const [post,setPost] = useState<Post | null>(null) 
     const [errorMessage,setErrorMessage] = useState<string>('');
+    
 
 
     const handleAxiosError = (error: AxiosError) =>{
@@ -63,7 +64,7 @@ export default function Page() {
     },[id]) // Re-run fetch if the `id` changes
 
 
-    const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
+    const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>{
         const {name,value} = e.target;  // Destructure name and value from the event's target
         // console.log(name,':',value)\
         
@@ -83,10 +84,14 @@ export default function Page() {
         e.preventDefault(); // prevent refresh after submit form
         console.log(post);
         try{
+            if(!post?.title || !post?.content || !post?.category){
+                throw new Error('Require Title, Content, Category field');
+            }
             // Update post with POST method to api
             await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`,{
-                title:post?.title,
-                content:post?.content
+                title:post.title,
+                content:post.content,
+                category:post.category,
             });
 
             router.push('/')
@@ -100,6 +105,7 @@ export default function Page() {
             };
         };
     }
+
 
     return (
         <div className='min-w-full min-h-screen flex flex-col gap-5 px-10 py-10'>
@@ -115,15 +121,27 @@ export default function Page() {
                         minute:'numeric'})} </p>
             </div>
             
-            <form onSubmit={handleSubmit} className='w-3/4 flex flex-col gap-5'>
-                <div className='flex flex-col gap-2'>
+            <form onSubmit={handleSubmit} className='w-3/4 grid grid-cols-12 gap-5'>
+                <div className='col-span-8 flex flex-col gap-2'>
                     <Label htmlFor='title'>Title</Label>
                     <Input type='text' name='title' id='title' placeholder='Edit title here'
                     value={post?.title || ''}
                     onChange={handleInputChange}
                     required/>
                 </div>
-                <div className='flex flex-col gap-2'>
+                <div className='col-span-4 flex flex-col gap-2'>
+                    <Label htmlFor='category'>Category</Label>
+                    <select name="category" id="category" onChange={handleInputChange}
+                    className='w-3/4 h-full rounded-md shadown-md border text-sm border-gray-300 hover:shadow-lg'>
+                        <option value='' >{post?.category ? post?.category : 'Select Category'}</option>
+                        <option value="article">Article</option>
+                        <option value="travel">Travel</option>
+                        <option value="tech">Tech</option>
+                        <option value="lifestyle">Lifestyle</option>
+                        <option value="history">History</option>
+                    </select>
+                </div>
+                <div className='col-span-12 flex flex-col gap-2'>
                     <Label htmlFor='content' >Content</Label>
                     <textarea rows={5} id='content' name='content' placeholder='Edit content here'
                     className='flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-md focus:outline-none focus:shadow-lg'
@@ -131,8 +149,11 @@ export default function Page() {
                     onChange={handleInputChange}
                     required/>
                 </div>
-                <SubmitButton variant={'success'} className='w-2/6'>Update Change</SubmitButton>
-                {errorMessage && <div className='text-red-600 '>{errorMessage}</div>}
+                <div className='col-span-12 flex flex-col gap-3'>
+                    <SubmitButton variant={'success'} className='w-3/12'>Update Change</SubmitButton>
+                    {errorMessage && <div className='text-red-600 '>{errorMessage}</div>}
+                </div>
+                
             </form>
         </div>
     )
