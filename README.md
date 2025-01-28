@@ -1,6 +1,6 @@
 
 # Whisper Blog - CRUD with Prisma and Next.js
-
+![Image](https://github.com/user-attachments/assets/fb4c5b3f-abc5-42b4-8848-2165cd33d424)
 ## Introduction
 
 This project is a simple blog application built with Next.js and Prisma. It allows users to perform CRUD (Create, Read, Update, Delete) operations on blog posts. The application is designed to be a starting point for developers looking to build a full-stack application with Next.js and Prisma.
