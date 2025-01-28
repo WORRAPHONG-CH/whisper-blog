@@ -111,7 +111,7 @@ export default function Page(
     useEffect(()=>{
         fetchCategory();
         fetchPost();
-    },[id]) // Re-run fetch if the `id` changes
+    },[]) // Re-run fetch if the `id` changes
 
     const handleImageChange = async (e:React.ChangeEvent<HTMLInputElement>) =>{
         const files = e.target.files;

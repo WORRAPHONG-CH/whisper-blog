@@ -3,7 +3,7 @@ import { Button } from "@/app/components/ui/Button";
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
-export const ErrorPage: React.FC = () => {
+const ErrorPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-red-200 to-red-50">
       <div className="text-center max-w-md">
