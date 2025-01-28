@@ -37,9 +37,9 @@ export async function GET(
 
         const results = await prisma.post.findMany({
             where: whereCondition,
-            orderBy:{ // orderBy createAt(Date)
-                createAt: sort,
-            } as {createAt : 'asc' | 'desc'} ,
+            orderBy:{ // orderBy updateAt(Date)
+                updateAt: sort,
+            } as {updateAt : 'asc' | 'desc'} ,
             include:{
                 author: {
                     select:{
