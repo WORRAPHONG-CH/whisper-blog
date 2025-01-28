@@ -1,24 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Whisper Blog - CRUD with Prisma and Next.js
 
-First, run the development server:
+## Introduction
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project is a simple blog application built with Next.js and Prisma. It allows users to perform CRUD (Create, Read, Update, Delete) operations on blog posts. The application is designed to be a starting point for developers looking to build a full-stack application with Next.js and Prisma.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- User authentication and authorization
+- Role-based access control (Admin, User)
+- Admin page for managing categories, users, and posts
+- Create, read, update, and delete blog posts
+- Responsive design with Tailwind CSS
+- Docker support for containerized development
+- Prisma ORM for database management
+- API routes for handling server-side logic
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technologies Used
+
+- **Next.js**: A React framework for building server-side rendered applications.
+- **Prisma**: An ORM (Object-Relational Mapping) tool for working with databases in a type-safe manner.
+- **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
+- **Tailwind CSS**: A utility-first CSS framework for rapidly building custom user interfaces.
+- **Docker**: A platform for developing and running applications in containers.
+
+## Installation
+
+To get started with this project, follow these steps:
+
+1. **Clone the repository**:
+    ```sh
+    git clone https://github.com/your-username/blog-crud-prisma.git
+    cd blog-crud-prisma
+    ```
+
+2. **Install dependencies**:
+    ```sh
+    npm install
+    ```
+
+3. **Set up environment variables**:
+    Create a [`.env`](.env ) file in the root directory and add the necessary environment variables. Refer to `.env.example` for the required variables.
+
+4. **Run database migrations**:
+    ```sh
+    npx prisma migrate dev
+    ```
+
+5. **Start the development server**:
+    ```sh
+    npm run dev
+    ```
+
+6. **Open the application**:
+    Open your browser and navigate to `http://localhost:3000` to see the application in action.
+
+## Docker
+
+To run the application using Docker, follow these steps:
+
+1. **Build the Docker image**:
+    ```sh
+    docker-compose build
+    ```
+
+2. **Run the Docker container**:
+    ```sh
+    docker-compose up
+    ```
+
+3. **Open the application**:
+    Open your browser and navigate to `http://localhost:3000` to see the application in action.
+
+
 
 ## Learn More
 
