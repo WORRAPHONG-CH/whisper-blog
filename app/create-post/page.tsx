@@ -1,11 +1,12 @@
 'use client'
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Label } from '../components/ui/Label';
 import { Input } from '../components/ui/Input';
 import { SubmitButton } from '../components/Submit-Button';
 import axios, {AxiosError} from 'axios';
 import { useRouter } from 'next/navigation';
+import { Category } from '@prisma/client';
 
 interface PostProp{
     title:string,
@@ -13,17 +14,52 @@ interface PostProp{
     category?: string
 }
 
+
+
 const initialPost:PostProp = {
     title : '',
     content :'',
     category:'',
 }
 
+const initalCategories:Category = {
+    id: 0,
+    name: ''
+}
+
 export default function Page() {
 
     const [post,setPost] = useState<PostProp>(initialPost);
+    const [categories,setCategories] = useState<Category | null>(initalCategories);
     const [errorMessage,setErrorMessage] = useState<string>('')
     const router = useRouter(); // for redirect
+
+    console.log('category:',categories);
+
+    const fetchCategory = async () =>{
+        try{
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/category`);
+
+            if(!response){
+                throw new Error('Fetch category fail !');
+            }
+            
+            setCategories(response.data);
+
+        }catch(error){
+            if(axios.isAxiosError(error)){  
+                setErrorMessage((error as AxiosError).message)
+            }
+            else{
+                setErrorMessage((error as Error).message)
+            }
+        }
+
+    }
+
+    useEffect(()=>{
+        fetchCategory();
+    },[])
 
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>{
         const {name, value} = e.target;
@@ -54,7 +90,7 @@ export default function Page() {
             content: post.content,
             category: post.category
         })
-        router.push('/');
+        router.push('/manage-posts');
 
 
     }catch(error){

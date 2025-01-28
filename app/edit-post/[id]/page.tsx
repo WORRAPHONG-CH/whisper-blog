@@ -94,7 +94,7 @@ export default function Page() {
                 category:post.category,
             });
 
-            router.push('/')
+            router.push('/manage-posts')
             
         }catch(error){
             if(axios.isAxiosError(error)){

@@ -14,11 +14,17 @@ type FilterProps = {
 const initialFilter:FilterProps = {
   search: '',
   sort: 'desc',
-  category: 'all',
+  category: '0',
 }
 
+interface CategoryProps{
+  id:number,
+  name:string
+}
 
-function SearchFilter() {
+const SearchFilter = (
+    {categories} :{categories:CategoryProps[]}
+) => {
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -39,8 +45,6 @@ function SearchFilter() {
         prevState
       })
     }
-
-    
     
     const handleFilterClick = () =>{
       try{
@@ -59,21 +63,26 @@ function SearchFilter() {
     }
     
   return (
-    <div className='w-full flex flex-row gap-3'>
+    <div className='w-full flex flex-col md:flex-row justify-center gap-3'>
         
         <Input name='search' placeholder='Search Title here' onChange={handleInputChange}
-        className='w-4/12 px-3 rounded-full'/>
+        className='w-full md:w-4/12 px-3 rounded-lg'/>
         
+        <div className='flex justify-center gap-2'>
+        {/* Category Filter */}
         <select name="category" id="category" onChange={handleInputChange}
             className='text-sm border border-gray-300 rounded-md p-1'>
-            <option value="">Select Category</option>
-            <option value="article">Article</option>
-            <option value="travel">Travel</option>
-            <option value="tech">Tech</option>
-            <option value="lifestyle">Lifestyle</option>
-            <option value="history">History</option>
+            <option value={'0'}>All</option>
+            {
+              categories?.map((category,index)=>{
+                return(
+                  <option key={index} value={category.id}>{category.name}</option>
+                )
+              })
+            }
         </select>
 
+        {/* Date filter */}
         <select name="sort" id="sort" onChange={handleInputChange}
         className='text-sm border border-gray-300 rounded-md p-1'>
             <option value="desc">Lastest</option>
@@ -81,8 +90,12 @@ function SearchFilter() {
         </select>
         
   
-        <SubmitButton variant={'success'} onClick={handleFilterClick}>Apply</SubmitButton>
-        
+        <SubmitButton variant={'success'} onClick={handleFilterClick}
+        className='h-10 bg-purple-500 hover:bg-purple-800'
+        >
+          Apply
+          </SubmitButton>
+        </div>
         
         
     </div>

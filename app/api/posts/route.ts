@@ -1,17 +1,11 @@
 import {prisma} from '@/lib/prisma';
-import { type NextRequest ,NextResponse } from 'next/server';
+import { NextRequest ,NextResponse } from 'next/server';
+import { errorHandler, type CustomError } from '../handleError';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
+
 // import { Post } from '@prisma/client';
 
-
-export interface CustomError extends Error{
-    statusCode?:number
-}
-
-const errorHandler = (error:CustomError) =>{
-    const statusCode = error.statusCode || 500;
-    const errorMessage = error.message || "Internal server error";
-    NextResponse.json({status:statusCode,error:errorMessage},{status:statusCode});
-}
 
 // API GET for get all post from database
 export async function GET(
@@ -19,22 +13,24 @@ export async function GET(
 ){
     try{
         const searchParams = req.nextUrl.searchParams;
-        const category = searchParams.get('category') || 'all';
+        const categoryId = Number(searchParams.get('category') || '0');
         const search = searchParams.get('search') || ''; // if not search the params has npo value
         const sort =  searchParams.get('sort') || 'desc';
-        console.log({category,search,sort});
+        console.log({categoryId,search,sort});
 
         // Get data according to filter params
-        const whereCondition = category === 'all' ? {
+        const whereCondition = categoryId === 0 ? {
             title:{
                 contains: search,
                 mode: 'insensitive' as const,
             },
         } : {
-            category,
+            categoryId: {
+                equals: categoryId,
+            },
             title:{
-                contain:search,
-                mode:'insensitive' as const,
+                contains: search,
+                mode: 'insensitive' as const,
             }
         }
         console.log('whereCondition:',whereCondition);
@@ -44,6 +40,17 @@ export async function GET(
             orderBy:{ // orderBy createAt(Date)
                 createAt: sort,
             } as {createAt : 'asc' | 'desc'} ,
+            include:{
+                author: {
+                    select:{
+                        name:true,
+                        email:true,
+                        image:true,
+                    }
+                },
+                category:true
+            },
+            
         }); // prisma.schema.queryMethod
         
         // if results is empthy
@@ -53,7 +60,7 @@ export async function GET(
         // console.log('results:',results);
     
 
-        return Response.json({data:results})
+        return NextResponse.json({results}, {status:200})
     }catch(error:unknown){
         return errorHandler(error as CustomError);
     }
@@ -61,21 +68,30 @@ export async function GET(
 }
 
 // API POST for get title, content
-export async function POST(req:Request){
+export async function POST(req:NextRequest){
     try{
-        const {title,content,category} = await req.json(); // convert request to jsObj
+        const session = await getServerSession(authOptions);
+        if(!session || !session.user){
+            throw new Error('Session not found, please login');
+        }
+
+        const {title,content,categoryId,published,image} = await req.json(); // convert request to jsObj
+        if (!categoryId) {
+            throw new Error('Category ID is missing');
+        }
+        console.log('category:',categoryId, typeof(categoryId))
         const newPost = await prisma.post.create({
             data:{
                 title,
                 content,
-                category
+                categoryId:Number(categoryId),
+                published,
+                authorId : String(session.user.id),
+                image: image|| null
             },
         });
         
-
-        return Response.json({
-            newPost
-        })
+        return NextResponse.json({newPost} ,{status:201})
         
     }catch(error){
         return errorHandler(error as CustomError);

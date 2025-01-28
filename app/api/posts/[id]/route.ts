@@ -1,18 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { errorHandler, type CustomError } from '../../handleError';
 
 
-interface CustomError extends Error{
-    statusCode?: number
-}
 
-// Error Handling
-export const errorHandler = (error:CustomError) =>{
-    const statusCode = error.statusCode || 500
-    const messageError = error.message || "Internal server error"
-    console.log("ERROR:",messageError);
-    return NextResponse.json({status: statusCode,error:messageError},{status:statusCode});
-}
 
 // API GET to get post according to id
 export async function GET(
@@ -22,11 +13,21 @@ export async function GET(
 {
     
     try{
-        const postId = Number((await params).id);
+        const postId = (await params).id;
         // const {postId} = req.query; // Get the id from the query parameters
         // Find data with param id
         const result = await prisma.post.findUnique({
-            where:{ id : Number(postId) },
+            where:{ id : postId },
+            include:{
+                author:{
+                    select:{
+                        name:true,
+                        image:true,
+                        email:true,
+                    },
+                },
+                category:true
+            }
         })
         
         // If not found 
@@ -35,8 +36,9 @@ export async function GET(
             error.statusCode = 400;
             throw error;
         }
+        
 
-        return NextResponse.json({data:result});
+        return NextResponse.json({post:result},{status:200});
 
 
     }catch(error){       
@@ -53,12 +55,12 @@ export async function PUT(
     
     try{
         // Get editId from url params
-        const editId = Number((await params).id);
-        console.log(editId);
+        const editId = (await params).id;
+        // console.log(editId);
 
         // Get update data from req.body
-        const {title,content, category} = await req.json();
-        console.log(title,content, category);
+        const {title,content, category, published, image} = await req.json();
+        // console.log(title,content, category, published);
 
         // Update data
         const updatePost = await prisma.post.update({
@@ -66,7 +68,9 @@ export async function PUT(
             data:{
                 title,
                 content,
-                category
+                category,
+                published,
+                image
             }
         })
 
@@ -85,7 +89,7 @@ export async function DELETE(
 ){
     try{
         // Get delete ID from params url
-        const deleteId = Number((await params).id);
+        const deleteId = (await params).id;
 
         // Delete post in database 
         const deletePost = await prisma.post.delete({

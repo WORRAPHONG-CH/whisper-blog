@@ -11,13 +11,62 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id String @id @default(cuid())
+  name String? 
+  email String @unique
+  password String? 
+  image String?
+  role String @default("member")
+  emailVerified DateTime?
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  account Account[]
+  posts Post[]
+}
+
+model Account {
+  id String @id @default(cuid())
+  userId String
+  type String
+  provider String
+  providerAccountId String
+  refresh_token String? @db.Text
+  access_token String? @db.Text
+  expires_at Int? 
+  token_type String? 
+  scope String?
+  id_token String? @db.Text
+  session_state String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+   //This prevents a user from having multiple accounts with the same provider.enforce these rules at the database level, ensuring data integrity and preventing duplicate records. 
+  @@unique([provider, providerAccountId]) 
 }
 
 model Post {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   title String
   content String?
-  category String?
+  image String?
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  published Boolean @default(false)
   createAt  DateTime @default(now())
+  updateAt DateTime @updatedAt
+  author User @relation(fields:[authorId], references: [id])
+  authorId String
 }
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  posts Post[]
+}
+
+

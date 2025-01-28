@@ -1,79 +1,100 @@
-// 'use client'
-import { Button } from "./components/ui/Button";
-import PostTable from "./components/PostTable";
+import Hero from "./components/Hero";
+import CarouselCategories from "./components/CarouselCategories";
+import {Button} from "./components/ui/Button";
 import Link from "next/link";
-import { Suspense } from "react";
-import { SearchFilter } from "./components/SearchFilter";
-import {Post} from '@prisma/client';
-import axios,{AxiosError} from 'axios';
+// import { motion } from "framer-motion";
+// import { stagger } from "motion";
+import Reveal from "./components/animation/Reveal";
 
-// import dynamic from "next/dynamic";
+// const containerVariant = {
+//   hidden:{opacity:0},
+//   visible:{
+//     opacity:1,
+//     transition:{
+//       staggerChildren: 0.3
+//     }
+    
+//   }
+// }
 
-// const PostTable = dynamic(()=> import('./components/PostTable'),{
-//   ssr: true,
-// });
 
-type Filterprops = {
-  filterParams: {[key:string] : string | ''}
-}
-
-const fetchPosts = async (filterParams:Filterprops['filterParams']):Promise<Post[]> =>{
-    try{
-        // object destructuring from filterparams
-        const {category, search, sort} = filterParams;
-        const query = new URLSearchParams({
-            category: category || 'all',
-            search: search || '',
-            sort: sort as string || 'desc',
-        }).toString();
-
-        // fetch data from api 
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?${query}`,{
-            headers:{
-                "Cache-Control":'no-store', // Ensure data is always fresh
-            } 
-        });
-
-        // if response is success
-
-        return response.data.data; 
-        
-    }catch(error:unknown){
-        const errMessage = error as AxiosError;
-        console.log(errMessage.message);
-        throw errMessage;
-    }
-}
-
-export default async function Home(
-  {searchParams, } : {searchParams:Promise<{[key:string]:string | ''}>}
-) {
-  const filterParams = await searchParams;
-
-  const posts = await fetchPosts(filterParams);
-  
+export default async function Home() {
+  // const session = await getServerSession(authOptions);
   return (
-    <div className="bg-white min-h-screen min-w-full py-10 px-10 flex flex-col gap-5 ">
-      <h2 className="text-black font-bold text-2xl">Blog Posts</h2>
+    <div className="min-h-screen h-fit min-w-full text-white"
+      // variants={containerVariant}
+      >
+      
+      <Hero/>
+      
+      <main>
+        <CarouselCategories/>
 
-      <div className="w-3/4 self-center">
-        <SearchFilter/>
-      </div>
+        <section className="py-16  bg-slate-50">
+          <Reveal><h2 className="text-3xl font-semibold text-center text-gray-800">What Whisper Offers</h2></Reveal>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-10 max-w-6xl mx-auto px-6">
+            <Reveal>
+            <div className="p-6 bg-gradient-to-r from-purple-200 via-pink-200 to-blue-200 rounded-xl shadow-md">
+              <h3 className="text-lg font-semibold text-gray-800">Create Stunning Blog Posts</h3>
+              <p className="text-gray-600 mt-2">Share your thoughts, stories, or expertise with a beautiful and easy-to-use editor.</p>
+            </div>
+            </Reveal>
+            <Reveal>
+            <div className="p-6 bg-gradient-to-r from-green-200 via-yellow-200 to-red-200 rounded-xl shadow-md">
+              <h3 className="text-lg font-semibold text-gray-800">Responsive Design</h3>
+              <p className="text-gray-600 mt-2">{`Enjoy seamless browsing on any device, whether it's desktop, tablet, or mobile.`}</p>
+            </div>
+            </Reveal>
+            <Reveal>
+            <div className="p-6 bg-gradient-to-r from-teal-200 via-purple-200 to-orange-200 rounded-xl shadow-md">
+              <h3 className="text-lg font-semibold text-gray-800">Stay Organized</h3>
+              <p className="text-gray-600 mt-2">Categorize your posts, save drafts, and manage content effortlessly.</p>
+            </div>
+            </Reveal>
+          </div>
+        </section>
+
+        
+      {/* Vison Section */}
+      <section className="py-16 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 text-center">
+        <Reveal><h2 className="text-3xl font-bold text-gray-800">Our Vision</h2></Reveal>
+        <Reveal>
+          <p className="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
+          {`Whisper is a platform built to help creators and thinkers share their voices with the world. 
+          Whether you're here to inspire, learn, or explore, we're committed to building a community 
+          where ideas thrive.`}
+        </p>
+        </Reveal>
+      </section>
+
       
 
-      <main className="w-3/4 self-center">
-        <Suspense fallback={
-          <p className="text-md w-full self-center "> Loading Data... </p>}>
-          <PostTable posts={posts}/>
-        </Suspense>
 
-        <Link href='/create-post'>
-          <Button variant={"success"} size={'sm'} className="w-1/4 my-5 self-start">
-            Create a New Post
-        </Button>
-      </Link>
+      
+      {/* Final section */}
+      <section className="py-12 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 text-center">
+        <Reveal>
+        <h2 className="text-3xl font-bold text-gray-800">
+          Ready to Start Whispering Your Ideas?
+        </h2>
+        </Reveal>
+        <Reveal>
+        <p className="text-gray-600 mt-4">Join our growing community today and share your thoughts with the world.</p>
+        </Reveal>
+        <Reveal>
+        <Link href={'/blogs'}>
+          <Button className="mt-6 h-10 px-6 py-3 bg-purple-500 text-white rounded-full shadow-lg hover:bg-purple-600">
+            Get Started
+          </Button>
+        </Link>
+        </Reveal>
+      </section>
+
+      
+
+
+
       </main>
-      
       
     </div>
   );
