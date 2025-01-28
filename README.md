@@ -20,6 +20,7 @@ This project is a simple blog application built with Next.js and Prisma. It allo
 
 - **Next.js**: A React framework for building server-side rendered applications.
 - **Prisma**: An ORM (Object-Relational Mapping) tool for working with databases in a type-safe manner.
+- **Supabase**: An open-source Firebase alternative for strorage and database management.
 - **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
 - **Tailwind CSS**: A utility-first CSS framework for rapidly building custom user interfaces.
 - **Docker**: A platform for developing and running applications in containers.
