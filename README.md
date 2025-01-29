@@ -4,6 +4,7 @@
 ## Introduction
 
 This project is a simple blog application built with Next.js and Prisma. It allows users to perform CRUD (Create, Read, Update, Delete) operations on blog posts. The application is designed to be a starting point for developers looking to build a full-stack application with Next.js and Prisma.
+Demo: [`https://whisper-blog-sigma.vercel.app`](https://whisper-blog-sigma.vercel.app)
 
 ## Features
 
