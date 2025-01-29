@@ -6,6 +6,8 @@ import { UserCircle, LogOut , GalleryVerticalEnd} from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 // import { useRouter } from "next/navigation";
+import { Suspense } from "react";
+import BounceLoader from "./animation/BouceLoader";
 
 export const UserAccountButton = () => {
   // const router = useRouter();
@@ -33,12 +35,16 @@ export const UserAccountButton = () => {
                 {/* <div className='flex gap-1 h-full w-full justify-center items-center text-white bg-gradient-to-tr from-blue-800 to-[#5D43E5] rounded-full'
                   onClick={() =>{setIsOpen(!isOpen)}}
                 > */}
-                    {session?.user.image ? 
+                    <Suspense fallback={<BounceLoader/>}>
+                    {
+                    session?.user.image ? 
                     <Image src={session.user.image} alt='profile' width={50} height={50} style={{objectFit:'cover'}}  
                     className="rounded-full"
                     />
                     :
-                    <UserCircle color='white' size={45}/>}
+                    <UserCircle color='white' size={45}/>
+                  }
+                  </Suspense>
                     {/* <p>{session?.user.name}</p> */}
                 </div>
           

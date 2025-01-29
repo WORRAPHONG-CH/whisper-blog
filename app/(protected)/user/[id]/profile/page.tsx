@@ -12,6 +12,8 @@ import { Category } from "@prisma/client";
 import { Button } from "@/app/components/ui/Button";
 import Reveal from "@/app/components/animation/Reveal";
 import TextDrop from "@/app/components/animation/TextDrop";
+import { Suspense } from "react";
+import BounceLoader from "@/app/components/animation/BouceLoader";
 
 interface PostProps{
   id:string,
@@ -78,6 +80,7 @@ export default async function Profile() {
           {/* Profile Image */}
           <Reveal>
           <div className="relative w-full flex justify-center ">
+            <Suspense fallback={<BounceLoader/>}>
             {session?.user.image ? (
               <Image
                 src={session?.user.image}
@@ -89,6 +92,7 @@ export default async function Profile() {
             ) : (
               <UserCircle className=" text-gray-300" size={120} color="purple"/>
             )}
+            </Suspense>
           </div>
           </Reveal>
 
@@ -105,6 +109,7 @@ export default async function Profile() {
         {/* User Info */}
         <Reveal>
         <div className="mt-6 mx-auto md:w-3/4  bg-gradient-to-r text-md md:text-lg from-indigo-200 to-pink-200 p-6 rounded-xl shadow-md">
+        <Suspense fallback={<BounceLoader/>}>
           <div className="flex items-center gap-4  text-gray-800">
             <User  className="text-purple-500" />
             <p>{session?.user.name}</p>
@@ -117,6 +122,7 @@ export default async function Profile() {
             <Users className="text-green-500" />
             <p>{session?.user.role}</p>
           </div>
+          </Suspense>
         </div>
         </Reveal>
 
@@ -134,7 +140,7 @@ export default async function Profile() {
             </Link>
           </div>
           <div className="mt-6 space-y-4 overflow-y-auto max-h-[30rem] shadow-md rounded-xl">
-
+          <Suspense fallback={<BounceLoader/>}>
             {posts.length > 0 ? (
               posts.map((post) => (
                 <CardPosts
@@ -151,6 +157,7 @@ export default async function Profile() {
             ) : (
               <p className="text-gray-600 text-center">No blog posts yet!</p>
             )}
+            </Suspense>
           </div>
         </div>
         </Reveal>

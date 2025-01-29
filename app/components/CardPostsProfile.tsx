@@ -5,6 +5,8 @@ import { DeleteButton } from './Delete-Button';
 import { SquarePen, Trash2,ImageOff } from 'lucide-react';
 import Link from 'next/link';
 import Reveal from './animation/Reveal';
+import { Suspense } from 'react';
+import BounceLoader from './animation/BouceLoader';
 
 
 interface CardProps {
@@ -32,6 +34,7 @@ export const CardPosts: React.FC<CardProps> = ({
     <div className="bg-white rounded-xl shadow-md p-4 flex flex-col md:flex-row gap-4 hover:shadow-lg transition-shadow duration-300">
       {/* Image Section */}
       <div className="relative h-40 md:h-auto  w-full md:w-4/12 bg-gray-300 rounded-xl overflow-hidden flex items-center justify-center">
+        <Suspense fallback={<BounceLoader/>}>
         {imageUrl ? 
         <Image
         src={imageUrl}
@@ -44,6 +47,7 @@ export const CardPosts: React.FC<CardProps> = ({
         :
         <ImageOff color='white' size={40}/>
         }
+        </Suspense>
       </div>
 
       {/* Content Section */}

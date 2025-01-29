@@ -9,6 +9,8 @@ import { Navigation, Pagination } from 'swiper/modules';
 import Image from "next/image";
 import Reveal from "./animation/Reveal";
 import TextDrop from "./animation/TextDrop";
+import { Suspense } from "react";
+import BounceLoader from "./animation/BouceLoader";
 
 const categories = [
     { name: "Travel", image: "/assets/categories/travel2.jpg" },
@@ -50,6 +52,7 @@ const CarouselCategories: React.FC = () => {
           1024: { slidesPerView: 3 },
         }}
       >
+        <Suspense fallback={<BounceLoader/>}>
         {categories.map((category) => (
           <SwiperSlide key={category.name}>
             <div className="relative group w-full h-full">
@@ -69,6 +72,7 @@ const CarouselCategories: React.FC = () => {
             
           </SwiperSlide>
         ))}
+        </Suspense>
       </Swiper>
       </Reveal>
     </div>

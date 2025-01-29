@@ -8,6 +8,7 @@ import { authOptions } from "@/lib/authOptions";
 import Footer from "./components/Footer";
 
 
+
 const rubik = Rubik({
   variable: "--font-rubik",
   subsets:['latin'],
@@ -46,8 +47,10 @@ export default async function RootLayout({
       >
         <Provider session={session} >
           <NavBar/>
+        
           {children}
           <Footer/>
+          
         </Provider>
         
       </body>

@@ -4,6 +4,8 @@ import axios,{ AxiosError} from 'axios';
 import { ImageDown } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import BounceLoader from '@/app/components/animation/BouceLoader';
 
 interface PostProp{
     id: string,
@@ -61,6 +63,7 @@ export default async function BlogDetails(
             <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
                 {/* Image section */}
                 <div className='w-full'>
+                    <Suspense fallback={<BounceLoader/>}>
                     {
                         post?.image ? 
                         <Image
@@ -72,7 +75,7 @@ export default async function BlogDetails(
                         <ImageDown size={150} color='gray'/>
 
                     }
-
+                </Suspense>
                 </div>
                 {/* Content Section */}
                 <div className="py-5 px-8">
@@ -82,6 +85,7 @@ export default async function BlogDetails(
                     
                     <div className='w-full flex justify-between items-center mb-6'>
                         <div className='w-full flex gap-4 md:gap-2 items-center'>
+                        <Suspense fallback={<BounceLoader/>}>
                             {
                                 post?.author.image &&
                                 <Image
@@ -93,6 +97,7 @@ export default async function BlogDetails(
                                 className='rounded-full'
                             />
                             }
+                            </Suspense>
                             <div className='flex flex-col gap-2 md:flex-row'>
                                 <p className="textmd md:text-lg font-semibold text-gray-500">
                                     {`By ${post?.author.name}`}

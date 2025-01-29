@@ -13,6 +13,8 @@ import { Category } from '@prisma/client';
 import { ImageUp, Upload } from 'lucide-react';
 import Image from 'next/image';
 import { uploadImage } from '@/utills/supabase/storage/clientStorage';
+import { Suspense } from 'react';
+import BounceLoader from '@/app/components/animation/BouceLoader';
 
 interface PostProp {
   title: string;
@@ -163,6 +165,7 @@ export default function Page() {
         {/* Image */}
         <div className='w-full flex flex-col justify-center items-center gap-5 py-5'>
           <div className='relative overflow-hidden  w-11/12 h-44 md:h-72 flex justify-center items-center border-dashed border-4 border-purple-400 rounded-xl'>
+          <Suspense fallback={<BounceLoader/>}>
           {
             imageLocal.url ?
             <Image src={imageLocal.url} 
@@ -174,6 +177,7 @@ export default function Page() {
             :
             <ImageUp size={120} color='purple'/>
             }
+            </Suspense>
           </div>
           
           <Input 

@@ -12,6 +12,8 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Reveal from '@/app/components/animation/Reveal';
 // import { sign } from 'crypto';
+import { Suspense } from 'react';
+import BounceLoader from '@/app/components/animation/BouceLoader';
 
 interface UserData{
   email:string,
@@ -90,6 +92,7 @@ export default function SignInPage() {
         <Reveal className='w-full px-5 md:w-9/12'>
         <div className='bg-white h-fit mt-20 md:mt-0 md:w-full  rounded-2xl shadow-lg md:grid md:grid-cols-12'>
             <div className='col-span-7 relative rounded-s-2xl'>
+              <Suspense fallback={<BounceLoader/>}>
                 <Image
                 alt='city-vibe'
                 src={"https://images.pexels.com/photos/315191/pexels-photo-315191.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"}
@@ -99,6 +102,7 @@ export default function SignInPage() {
                 style={{objectFit:'cover', }}
                 className='rounded-s-2xl hidden md:flex'
                 />
+                </Suspense>
             </div>
 
             <div className='col-span-5 flex flex-col px-8 py-5 w-full gap-5 md:border-l-2'>

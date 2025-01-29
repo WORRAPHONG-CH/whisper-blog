@@ -5,6 +5,8 @@ import { SearchFilter } from '@/app/components/SearchFilter';
 import Reveal from '@/app/components/animation/Reveal';
 import TextDrop from '@/app/components/animation/TextDrop';
 import CardBlogs from '@/app/components/CardBlogsSection';
+import { Suspense } from 'react';
+import BounceLoader from '@/app/components/animation/BouceLoader';
 // import Image from 'next/image';
 // import Link from 'next/link';
 // import { Input } from '@/app/components/ui/Input';
@@ -130,7 +132,7 @@ export default async function BlogPage(
                     // onChange={}
                 />
             </div> */}
-
+            <Suspense fallback={<BounceLoader/>}>
             {/* Card Section */}
             {
                 blogs ?
@@ -139,7 +141,7 @@ export default async function BlogPage(
                 <p className='text-md md:text-lg text-center font-semibold text-gray-500'>No blog posts yet!</p>
 
             }
-
+            </Suspense>
             
             
         </div>

@@ -10,6 +10,8 @@ import axios,{AxiosError} from 'axios';
 import GoogleIcon from '@/app/components/GoogleIcon';
 import { useRouter } from 'next/navigation';
 import Reveal from '@/app/components/animation/Reveal';
+import { Suspense } from 'react';
+import BounceLoader from '@/app/components/animation/BouceLoader';
 // import { signIn } from 'next-auth/react';
 // import { Label } from '@/app/components/ui/Label'
 
@@ -107,6 +109,7 @@ export default function SignupPage() {
         <Reveal className='w-full md:w-9/12 '>
         <div className='bg-white h-fit  md:mt-0 md:w-full  rounded-2xl shadow-lg md:grid md:grid-cols-12 '>
             <div className='col-span-7 relative rounded-s-2xl'>
+              <Suspense fallback={<BounceLoader/>}>
                 <Image alt='city-vibe' src={'https://images.pexels.com/photos/10170503/pexels-photo-10170503.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
                 fill
                 sizes='(max-width:768px) 200px'
@@ -114,6 +117,7 @@ export default function SignupPage() {
                 style={{objectFit:'cover'}}
                 className='rounded-s-2xl'
                 />
+                </Suspense>
             </div>
 
             <div className='col-span-5 flex flex-col px-6 py-5 w-full gap-5 md:border-l-2'>

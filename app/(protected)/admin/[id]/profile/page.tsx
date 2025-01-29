@@ -12,6 +12,9 @@ import { CardPosts } from '@/app/components/CardPostsProfile';
 import UserManagement from '@/app/components/admin/UserManagement';
 import CardCategory from '@/app/components/admin/CardCategory';
 import Reveal from '@/app/components/animation/Reveal';
+import { Suspense } from 'react';
+import BounceLoader from '@/app/components/animation/BouceLoader';
+import { prisma } from '@/lib/prisma';
 // import { cookies } from 'next/headers';
 // import supabase from '@/utills/supabase/client';
 
@@ -24,18 +27,18 @@ interface PostProps{
     image?:string
 }
 
-// interface Userprops{
-//     id:string,
-//     name:string,
-//     email:string,
-//     role:string,
-//     image:string,
-//     posts?:{
-//         id:string,
-//         image:string,
-//         title:string
-//     }[]
-// }
+type Userprops = {
+    id:string,
+    name:string | null,
+    email:string,
+    role:string,
+    image:string | null,
+    posts?:{
+        id:string,
+        image:string | null,
+        title:string
+    }[]
+}
 
 interface CategoryProps{
     id:number,
@@ -91,6 +94,34 @@ const fetchPosts = async(adminId:string):Promise<PostProps[]> =>{
 //     }
 // };
 
+const fetchUsers = async (): Promise<Userprops[] | null> => {
+    try {
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                image: true,
+                posts: {
+                    select: {
+                        id: true,
+                        title: true,
+                        image: true,
+                    }
+                }
+            },
+        });
+
+        return users;
+
+    } catch (error) {
+        console.error((error as Error).message);
+        
+        return null
+    }
+};
+
 const fetchCategory = async ():Promise<CategoryProps[]> =>{
     try{
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/category`,{
@@ -135,11 +166,12 @@ export default async function AdminProfilePage(){
     // const cookieHeader = (await cookieStore).get('next-auth.session-token')?.value || '';
 
     // console.log('session:',session)
+    const users = await fetchUsers() || [];
     const [posts,categories] = await Promise.all([fetchPosts(session?.user.id),fetchCategory()])
     
     // console.log('posts:',posts)
     // console.log('catefory:',categories);
-    // console.log('users:', users)
+    // console.log('users:', users) 
 
 
     return (
@@ -154,6 +186,7 @@ export default async function AdminProfilePage(){
                 <div className="flex flex-col gap-5  md:flex-row items-center md:gap-5  rounded-lg shadow-lg py-5 px-4">
                     
                     <div className='w-full  md:w-1/4 flex justify-center'>
+                    <Suspense fallback={<BounceLoader/>}>
                         {session?.user.image ?
                         <Image
                             src={session?.user.image}
@@ -167,6 +200,7 @@ export default async function AdminProfilePage(){
                         <UserCircle size={30} color='purple' />
                     
                         }
+                    </Suspense>
                     </div>
                     
                     <div className=" mx-auto md:w-3/4 text-sm md:text-lg flex flex-col gap-3 ">
@@ -204,9 +238,10 @@ export default async function AdminProfilePage(){
                 </div>
                 
                 <div className="w-full space-y-4 overflow-y-auto max-h-[20rem]">
-                    
+                <Suspense fallback={<BounceLoader/>}>
                     {posts.length >0 ? 
                         posts.map((post,index) => (
+                            
                             <CardPosts
                                 key={index}
                                 userId={session?.user.id}
@@ -220,6 +255,7 @@ export default async function AdminProfilePage(){
                         )) :
                         <p className="text-gray-600 text-center">No blog posts yet!</p>
                     }
+                    </Suspense>
 
                 </div>
             </div>
@@ -227,13 +263,16 @@ export default async function AdminProfilePage(){
             {/* Category Management Section */}
             <div className="max-w-5xl w-full h-64 mx-auto ">
                 <h3 className="text-2xl font-bold mb-4">Manage Categories</h3>
+                <Suspense fallback={<BounceLoader/>}>
                 <CardCategory categories={categories}/>
+                </Suspense>
                 
             </div>
 
             {/* User Management Section */}
-            <UserManagement />
-            
+            <Suspense fallback={<BounceLoader/>}>
+            <UserManagement users={users }/>
+            </Suspense>
         </div>
     </div>
     );
