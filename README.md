@@ -23,8 +23,10 @@ Demo: [`https://whisper-blog-sigma.vercel.app`](https://whisper-blog-sigma.verce
 - **Prisma**: An ORM (Object-Relational Mapping) tool for working with databases in a type-safe manner.
 - **Supabase**: An open-source Firebase alternative for strorage and database management.
 - **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
+- **NextAuth.js**: is a complete open-source authentication solution for Next.js applications.
 - **Tailwind CSS**: A utility-first CSS framework for rapidly building custom user interfaces.
 - **Docker**: A platform for developing and running applications in containers.
+- **Vercel**: cloud platform for static sites and serverless functions. It allows developers to build and deploy web projects with ease
 
 ## Installation
 
